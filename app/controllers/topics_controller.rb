@@ -28,7 +28,10 @@ class TopicsController < ApplicationController
 
     respond_to do |format|
       if @topic.save
-        format.html { redirect_to @topic, notice: 'Topic was successfully created.' }
+        #before
+        #format.html { redirect_to @topic, notice: 'Topic was successfully created.' }        
+        #change the flow of app so that user is taken back to topics list after add a new topic or edit exisiting topic 
+        format.html { redirect_to topics_path, notice: 'Topic was successfully created.' }
         format.json { render :show, status: :created, location: @topic }
       else
         format.html { render :new }
@@ -42,7 +45,10 @@ class TopicsController < ApplicationController
   def update
     respond_to do |format|
       if @topic.update(topic_params)
-        format.html { redirect_to @topic, notice: 'Topic was successfully updated.' }
+        #before
+        #format.html { redirect_to @topic, notice: 'Topic was successfully updated.' }
+        #routes to the topic list after updating a topic
+        format.html { redirect_to topics_path, notice: 'Topic was successfully updated.' }
         format.json { render :show, status: :ok, location: @topic }
       else
         format.html { render :edit }
@@ -61,6 +67,17 @@ class TopicsController < ApplicationController
     end
   end
 
+  
+  def upvote
+    #finds the topic in the database with id and stories it in variable
+    @topic = Topic.find(params[:id])
+    #creates a new vote for the current topic and saves it in the database
+    @topic.votes.create
+    #tell the browser to go back to topic_path(the topics list)
+    redirect_to(topics_path)
+  end
+
+  
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_topic
@@ -71,4 +88,6 @@ class TopicsController < ApplicationController
     def topic_params
       params.require(:topic).permit(:title, :description)
     end
+
+
 end
